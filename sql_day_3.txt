@@ -1,0 +1,63 @@
+USE lpu_db;
+CREATE TABLE students_lpu2 (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    age INT CHECK (age >= 18),
+    gender VARCHAR(10),
+    branch VARCHAR(30) NOT NULL,
+    semester INT CHECK (semester BETWEEN 1 AND 8),
+    cgpa DECIMAL(3,1) CHECK (cgpa BETWEEN 0 AND 10),
+    city VARCHAR(50) DEFAULT 'Delhi',
+    email VARCHAR(100) UNIQUE,
+    phone_no VARCHAR(15) UNIQUE,
+    admission_date DATE,
+    fees DECIMAL(10,2) CHECK (fees > 0),
+    attendance DECIMAL(5,2) CHECK (attendance BETWEEN 0 AND 100)
+);
+desc students_lpu2;
+select* from students_lpu2;
+SHOW tables;
+INSERT INTO students_lpu2
+(student_id, student_name, age, gender, branch, semester, cgpa, city, email, phone_no, admission_date, fees, attendance)
+VALUES
+(101, 'Tanvi', 20, 'Female', 'CSE', 5, 8.8, 'Jalandhar', 'tanvi@gmail.com', '9876543210', '2023-08-10', 85000.00, 92.50),
+
+(102, 'Aman', 21, 'Male', 'IT', 5, 7.9, 'Delhi', 'aman@gmail.com', '9876543211', '2023-08-10', 85000.00, 88.00),
+
+(103, 'Priya', 19, 'Female', 'CSE', 3, 9.2, 'Mohali', 'priya@gmail.com', '9876543212', '2024-08-12', 80000.00, 96.50),
+
+(104, 'Rahul', 22, 'Male', 'ECE', 7, 7.1, 'Jaipur', 'rahul@gmail.com', '9876543213', '2022-08-15', 90000.00, 78.50),
+
+(105, 'Simran', 20, 'Female', 'IT', 5, 8.6, 'Chandigarh', 'simran@gmail.com', '9876543214', '2023-08-10', 85000.00, 94.00);
+#the scholarship committee wants a list of students whose cgpa is 9.00 or above
+SELECT student_name from students_lpu2 where cgpa>=9;
+#the academic office wants to identify students having attendace below 75% so that warning emain cna be sent
+SELECT student_name from students_lpu2 where attendance<75;
+#the finance department wants to know the top 10 students who have paid the highest fees
+SELECT* from students_lpu2 ORDER BY fees desc
+LIMIT 10;
+#management wants to know how many students belaongs to each city
+SELECT city, COUNT(*) from students_lpu 
+GROUP BY city;
+#the dean wants to compare the academic performance of each branch by calculating the avg cgpa
+SELECT branch, AVG(cgpa) from students_lpu2 
+GROUP BY branch;
+#the examination department wants to know how many students are studying in each semester 
+SELECT semester,COUNT(*) from students_lpu2
+GROUP BY semester;
+# The hod wants to identify branches more than 30 students for faculty planning
+SELECT branch, COUNT(*) AS total_students
+FROM students_lpu2
+GROUP BY branch
+HAVING COUNT(*) > 30;
+#the admission team wants the detail of students who joined during 2025
+SELECT *
+FROM students_lpu2
+WHERE YEAR(admission_date) = 2023;
+#the placement team is organzing a regional meetup and needs students onlyfrom delhi and mohali
+ SELECT *
+FROM students_lpu2
+WHERE city IN ('Delhi', 'Mohali');   # we can use or also here
+#the administration department wants all students whose name begins with P
+SELECT* FROM students_lpu2 
+WHERE student_name LIKE "p%";
