@@ -1,0 +1,188 @@
+DROP DATABASE IF EXISTS CompanyDB;
+CREATE DATABASE CompanyDB;
+Use CompanyDB;
+CREATE TABLE employees(
+emp_id INT PRIMARY KEY,
+emp_name VARCHAR(50),
+department VARCHAR(30),
+salary DECIMAL (10,2)
+);
+INSERT INTO employees
+(emp_id, emp_name, department, salary)
+VALUES
+(101, 'Amit Sharma', 'IT', 75000.00),
+(102, 'Priya Verma', 'HR', 52000.00),
+(103, 'Rahul Singh', 'Sales', 48000.00),
+(104, 'Sneha Gupta', 'Finance', 68000.00),
+(105, 'Karan Malhotra', 'IT', 92000.00),
+(106, 'Neha Kapoor', 'HR', 56000.00),
+(107, 'Rohan Mehta', 'Sales', 61000.00);
+SELECT * FROM employees;
+
+
+/* STORED PROCEDURES
+ normally SQL statements end with;
+Inside a procedure there can be multiple SQL statements
+So we temporary change the delimeter
+*/
+
+#QUERY TO CREATE PROCEDURE
+DELIMITER //       #IT is not mandatory to use // we can use any symbol like $ 
+CREATE PROCEDURE ShowAllEmployee()
+BEGIN
+	SELECT * FROM employees;
+END //
+DELIMITER ;
+
+#EXECUTE
+CALL ShowAllEmployee();
+
+
+#DEPT FILTER
+
+DELIMITER //
+CREATE PROCEDURE EmployeeDepartment
+(
+IN dept VARCHAR(30)
+)
+BEGIN 
+	SELECT * FROM employees
+    WHERE department=dept;
+END //
+DELIMITER //
+CALL EmployeeDepartment('IT');
+CALL EmployeeDepartment('HR');
+CALL EmployeeDepartment('Finance');
+
+#SALARY FILTER
+DROP PROCEDURE SalaryGreaterThan;
+DELIMITER //
+CREATE PROCEDURE SalaryGreaterThan
+(
+INamount DECIMAL(10,2)
+)
+BEGIN
+    SELECT * FROM employees WHERE salary > amount;
+END //
+CALL SalaryGreaterThan(50000);
+
+DELIMITER //
+CREATE PROCEDURE EmployeeFilter
+(
+IN dept VARCHAR(30),
+in MINsALARY decimal(10,2)
+)
+BEGIN
+	SELECT* FROM employees WHERE department = dept 
+    AND salary >= minSalary;
+END //
+DELIMITER ;
+CALL EmployeeFilter('IT',55000);
+
+SHOW PROCEDURE STATUS;
+
+#View Procedure definition
+SHOW CREATE PROCEDURE procedure_name;
+
+# DROP PROCEDURE  PROCEDURE_NAME
+
+#Q1 create a procedure to display all HR employees
+DELIMITER //
+
+CREATE PROCEDURE ShowHREmployees()
+BEGIN
+    SELECT *
+    FROM employees
+    WHERE department = 'HR';
+END //
+
+DELIMITER ;
+
+CALL ShowHREmployees();
+
+#Q2 CREATE A PROCEDURE THAT ACCEPTS DEPARTMENT AS INPUT
+DELIMITER //
+
+CREATE PROCEDURE EmployeeDept
+(
+    IN dept VARCHAR(30)
+)
+BEGIN
+    SELECT *
+    FROM employees
+    WHERE department = dept;
+END //
+
+DELIMITER ;
+CALL EmployeeDept('IT');
+
+#Q3 create a procedure that accepts min salary
+DROP PROCEDURE IF EXISTS SalaryGreaterThan;
+
+DELIMITER //
+
+CREATE PROCEDURE SalaryGreaterThan
+(
+    IN minSalary DECIMAL(10,2)
+)
+BEGIN
+    SELECT *
+    FROM employees
+    WHERE salary > minSalary;
+END //
+
+DELIMITER ;
+CALL SalaryGreaterThan(50000);
+
+#Q4 cretae a procedure with department and salary inputs	
+DROP PROCEDURE IF EXISTS EmployeeDeptSalary;
+
+DELIMITER //
+
+CREATE PROCEDURE EmployeeDeptSalary
+(
+    IN dept VARCHAR(30),
+    IN minSalary DECIMAL(10,2)
+)
+BEGIN
+    SELECT *
+    FROM employees
+    WHERE department = dept
+      AND salary > minSalary;
+END //
+
+DELIMITER ;
+CALL EmployeeDeptSalary('HR',50000);
+
+#Q5 execute each procedure with different values
+
+
+#Q6 Display employees earning more than 60000
+DELIMITER //
+
+CREATE PROCEDURE Salarygreaterthan60000()
+BEGIN
+    SELECT *
+    FROM employees
+    WHERE salary>60000;
+END //
+
+DELIMITER ;
+CALL Salarygreaterthan60000();
+
+#Q7 Display Finance employees
+DELIMITER //
+
+CREATE PROCEDURE Financeemp()
+BEGIN
+	SELECT * FROM employees 
+    WHERE department='Finance';
+END //
+DELIMITER ;
+CALL Financeemp();
+
+#Q8 View Procedure definition
+SHOW CREATE PROCEDURE Financeemp;
+
+#Q9 Drop a procedure and recreate it
+
