@@ -1,0 +1,167 @@
+use lpu_db;
+show tables;
+SELECT*FROM students_lpu2;
+#COMPOSITE KEY
+CREATE table attendance(
+student_id INT,
+subject_code varchar(10),
+Attendance_Date DATE,
+PRIMARY KEY(student_id,subject_code)
+);
+SELECT*FROM attendance;
+INSERT INTO attendance 
+VALUES
+(101,'SQL101','2026-07-01'),(101,'PY101','2026-07-01');
+#FOREIGN KEY
+CREATE TABLE Enrollments(
+Enrollment_ID INT PRIMARY KEY,
+student_id INT,
+course_name VARCHAR(50),
+FOREIGN KEY(student_id)
+REFERENCES students_lpu2(student_id));
+INSERT INTO Enrollments
+VALUES (1,101,'Python'),(2,102,'SQL');
+SELECT*FROM Enrollments;
+#AUTO_INCREMENT
+CREATE TABLE Students_Auto(
+students_id INT AUTO_INCREMENT PRIMARY KEY,
+student_name VARCHAR(100));
+INSERT INTO Students_Auto VALUES ('Priya'),('Rahul');
+SELECT*FROM Students_Auto;
+DROP Table Students_Auto;
+CREATE TABLE Students_Auto(
+student_id INT AUTO_INCREMENT PRIMARY KEY,
+student_name VARCHAR(100));
+INSERT INTO Students_Auto(student_name) VALUES ('Priya');
+INSERT INTO Students_Auto(student_name) VALUES ('Rahul');
+INSERT INTO Students_Auto(student_name) VALUES ('Aman');
+DELETE FROM Students_Auto WHERE student_id=2; #to checjk working of auto_increment
+#queries
+#insert two valid students records
+SELECT*FROM students_lpu2;
+INSERT INTO students_lpu2
+(student_id, student_name, age, gender, branch, semester, cgpa, city, email, phone_no, admission_date, fees, attendance)
+VALUES
+(106, 'Riya', 20, 'Female', 'CSE', 5, 8.5, 'Delhi', 'riya@gmail.com', '9876543222', '2023-08-10', 85000.00, 91.50);
+#try inserting a duplicate student_id 
+#query will not work bcz we took student_id as primaruy key duplicatye entry error
+INSERT INTO students_lpu2
+(student_id, student_name, age, gender, branch, semester, cgpa, city, email, phone_no, admission_date, fees, attendance)
+VALUES
+(104, 'Riya', 20, 'Female', 'CSE', 5, 8.5, 'Delhi', 'riya@gmail.com', '9876543222', '2023-08-10', 85000.00, 91.50); 
+#try insertinga duplicate email
+#error bcz email we took unique in table
+INSERT INTO students_lpu2
+(student_id, student_name, age, gender, branch, semester, cgpa, city, email, phone_no, admission_date, fees, attendance)
+VALUES
+(107, 'Riya', 20, 'Female', 'CSE', 5, 8.5, 'Delhi', 'riya@gmail.com', '9876543222', '2023-08-10', 85000.00, 91.50);
+#try inserting age=15
+#check constraint error bcz age is >=18 we specified in table 
+INSERT INTO students_lpu2
+(student_id, student_name, age, gender, branch, semester, cgpa, city, email, phone_no, admission_date, fees, attendance)
+VALUES
+(107, 'Riya', 15, 'Female', 'CSE', 5, 8.5, 'Delhi', 'riya@gmail.com', '9876543222', '2023-08-10', 85000.00, 91.50);
+#try inserting cgpa =11
+#try inserting fees=-1000
+#insert one recort wothout city what value it will store
+#insert one enrollment for student_id=101;
+INSERT INTO Enrollments
+VALUES (3,101,'Java');     
+INSERT INTO Enrollments
+VALUES (1,101,'Java');     #duplicate entry error bcz enrollment id is primary key 
+#create table departments
+CREATE TABLE departments(
+department_id INT PRIMARY KEY,
+department_name VARCHAR(50),
+hod_name VARCHAR(100));
+INSERT INTO departments VALUES(10,'Computer Science','Dr Sharma'),(20,'IT','Dr Gupta');
+INSERT INTO departments VALUES(30,'Mechanical','Dr Sharma'),(40,'AI','Dr Saini');
+SELECT*FROM departments;
+#create table faculty
+CREATE TABLE faculty(
+faculty_id INT PRIMARY KEY,
+faculty_name VARCHAR(100),
+department_id INT,
+FOREIGN KEY(department_id) REFERENCES departments(department_id));
+INSERT INTO faculty VALUES (101,'Ankit',10),(102,'Priya',20),(103,'Sanya',30),(104,'Shagun',40);
+SELECT*FROM faculty;
+#create table courses
+CREATE TABLE courses(
+course_id INT PRIMARY KEY,
+course_name VARCHAR(100),
+faculty_id INT,
+duration_months INT,
+FOREIGN KEY(faculty_id)
+REFERENCES faculty(faculty_id)
+);
+INSERT INTO courses VALUES(501,'SQL',101,2),(502,'Python',102,3),(503,'Java',103,4);
+SELECT*FROM courses;
+SHOW CREATE TABLE students_lpu2; #to check the command to cretae the students_lpu2 table
+#as of now we notice department_id is in faculty table also and gaculty _id is in courses table also but there 
+#is no common col un students_lpu2 and departments table so we create 1 common col that is dept id IN STUDENTS_LPU2 TABLE
+ALTER TABLE students_lpu2 
+ADD COLUMN department_id INT;
+#now add values or data in studets_lpu2 table for dept_id col
+UPDATE students_lpu2 
+SET department_id=10
+WHERE student_id IN (101,102,103);
+UPDATE students_lpu2 
+SET department_id=20
+WHERE student_id IN (104,105,106);
+#now check whether data inserted in students_lpu2;
+SELECT*FROM students_lpu2;
+#now we have made on ecol common in sgtudents_lpu2 and dept table now we have to make relation =ship also bw them and which key used for building relationship or connection? foreign key we are ding this bcz we have added a new col dept id so we need to make connectn bw both tables
+ALTER TABLE students_lpu2
+ADD CONSTRAINT fk_students_department
+FOREIGN KEY (department_id)
+REFERENCES departments(department_id);
+DESC students_lpu2;
+#if i want to fetch data of students in courses table but directly there is no connection bw students and course table but inde=irectly we can reach using foreign keys as faculty id pr. in cous[reses and fulty table as well and in faculty table there is dept_id col and deot_id col also pr in students_lpu2 table so using F.K and indirectly reaching we can do 
+#OR direct method of reaching is faculty id is present in courses table i can create 1 col faculty_id in students_lpu2 table also
+ALTER TABLE students_lpu2 
+ADD COLUMN faculty_id INT;
+UPDATE students_lpu2 
+SET faculty_id=101
+WHERE student_id IN (101,102,103);
+UPDATE students_lpu2 
+SET faculty_id=102
+WHERE student_id IN (104,105,106);
+#now check whether the data is inserted or not
+SELECT*FROM students_lpu2;
+#after adding col now we need to build relationship bw students and courses table using F.K 
+ALTER TABLE students_lpu2
+ADD CONSTRAINT fk_students_courses
+FOREIGN KEY (faculty_id)
+REFERENCES courses(faculty_id);
+
+#INDUSTRY EXAMPLE
+#FOOD DELIVERY APPLICATION 
+CREATE TABLE customers(
+customer_id INT PRIMARY KEY,
+customer_name VARCHAR(50),
+city VARCHAR(50)
+);
+CREATE TABLE  delivery_orders(
+order_id INT AUTO_INCREMENT PRIMARY KEY,
+customer_id INT, #cant be unique bcz 1 customer can place more that 1 order also
+restaurant_id INT,
+partner_id INT, #cant be unique bcz 1 delivery partner can deliver many orders
+order_amount decimal,
+order_date DATE ,
+FOREIGN KEY (restaurant_id ) REFERENCES restaurants(restaurant_id),
+FOREIGN KEY(customer_id) REFERENCES customers(customer_id),
+FOREIGN KEY(partner_id) REFERENCES delivery_partners(partner_id)
+);
+DESC delivery_orders;
+CREATE TABLE delivery_partners(
+partner_id INT PRIMARY KEY,
+partner_name VARCHAR(50),
+vehicle VARCHAR(50)
+);
+CREATE TABLE  restaurants(
+restaurant_id INT PRIMARY KEY,
+restaurant_name VARCHAR(50),
+city VARCHAR(50)
+); 
+
+
