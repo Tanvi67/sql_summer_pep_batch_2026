@@ -1,0 +1,362 @@
+show databases;
+use lpu_db;
+show tables;
+select*from students_lpu;
+alter table students_lpu
+add column minor varchar(20);
+desc students_lpu;
+ALTER TABLE students_lpu
+MODIFY COLUMN cgpa DECIMAL(3,2);
+SET SQL_SAFE_UPDATES = 0;
+UPDATE students_lpu
+SET minor = 'Data Sci'
+WHERE roll_number = 1;
+UPDATE students_lpu
+SET minor = 'Data Sci'
+WHERE roll_number = 2;
+UPDATE students_lpu
+SET minor = 'AI'
+WHERE roll_number = 3;
+UPDATE students_lpu
+SET minor = 'devops'
+WHERE roll_number = 4;
+select reg_num from students_lpu;
+ALTER TABLE students_lpu
+rename column age to student_age;
+select name, minor from students_lpu where minor="Data Sci"; 
+select reg_num,cgpa from students_lpu where cgpa="8.20";
+select* from students_lpu where name="rahul" and roll_number=2;
+select *from students_lpu where minor="Data sci" and cgpa>7;
+select*from students_lpu where minor="AI" and student_age >=20;
+select*from students_lpu where cgpa=8.20 or minor="AI";
+alter table students_lpu
+add column city varchar(20);
+SET SQL_SAFE_UPDATES = 0;
+UPDATE students_lpu
+SET city = 'Delhi'
+WHERE roll_number = 1;
+UPDATE students_lpu
+SET city = 'Delhi'
+WHERE roll_number = 2;
+UPDATE students_lpu
+SET city = 'Udaipur'
+WHERE roll_number = 3;
+UPDATE students_lpu
+SET city = 'Mumbai'
+WHERE roll_number = 4;
+UPDATE students_lpu
+SET city = 'Delhi'
+WHERE roll_number = 5;
+select* from students_lpu where not city = 'Delhi';
+select* from students_lpu where not cgpa > 8;
+select*from students_lpu where minor="Data Sci" and NOT student_age >20;
+select*from students_lpu where not minor ="Data Sci" and NOT minor="AI";
+select*from students_lpu where minor not in ("Data Sci","AI"); #line 53 and 54 are two diff ways to write same query
+select*from students_lpu where minor in ("Data Sci","AI","Devops"); #if there is need of 3 or more AND operator in place of that use IN operator
+select* from students_lpu where minor is NULL;
+select name,minor from students_lpu where minor is NULL; # retrieve students minor which is null means no val is there 
+select name,minor from students_lpu where minor is NOT NULL; # retrieve students minor which is not null means val is there 
+SELECT* FROM students_lpu WHERE student_age BETWEEN 20 AND 21;
+INSERT into students_lpu (name,reg_num,batch,cgpa,student_age,roll_number ,minor,city) values
+("Gaurav",106,2027,6,19,6,"cyber","jalandhar");
+SELECT name,reg_num FROM students_lpu WHERE reg_num IN (101, 103, 106);
+SELECT* FROM students_lpu WHERE name LIKE "r%";  #select name starting with r
+SELECT* FROM students_lpu WHERE name LIKE "%v"; ##select name ending with v
+SELECT* FROM students_lpu WHERE name LIKE "%V";
+SELECT name,reg_num FROM students_lpu WHERE city LIKE "%r";
+SELECT * FROM students_lpu WHERE name LIKE "%ra%";  #retrieve students whose name contain 'ra'
+SELECT * 
+FROM students      #retrieve students whose name has exactly 4 characters
+WHERE LENGTH(name) = 4;
+SELECT * 
+FROM students_lpu
+WHERE name LIKE '______';  #put the underscores equal to no. of characters u want in name
+ #both (67-73)are diff type to retrieve students whose anme has exactly 4 characters
+ SELECT * FROM students_lpu ORDER BY name;
+SELECT * FROM students_lpu ORDER BY cgpa desc;
+ SELECT * FROM students_lpu ORDER BY minor asc,name desc ;  #retruieve students sorted by branch and then name to is query mei phke minor ko asc order m krega fir like data sci minor same h to uska order name k desc prder m hoga 
+SELECT * FROM students_lpu WHERE minor="devops"; #display all students from devops minor
+SELECT * FROM students_lpu WHERE age BETWEEN 19 and 21; # display students whose age is between 19 to 21 
+SELECT*FROM students_lpu WHERE minor in ("devops","AI");#display students belonging to either devops or AI minor 
+select* FROM students_lpu WHERE name LIKE "S%"; #display students whose name starts with s
+SELECT DISTINCT minor 
+FROM students_lpu; #display all unique branches
+SELECT name,cgpa from students_lpu; #display only name AND CGPA COL
+SELECT* FROM students_lpu ORDER BY cgpa desc; #display students sorted by cgpa in desc order
+
+CREATE TABLE students_lpu1 (
+    student_name VARCHAR(100),
+    reg_id BIGINT NOT NULL PRIMARY KEY,
+    class VARCHAR(20),
+    cgpa DECIMAL(3,2),
+    age INT,
+    city VARCHAR(50),
+    semester INT,
+    admission_date DATE,
+    fees DECIMAL(10,2),
+    attendance DECIMAL(5,2),
+    phone_no BIGINT,
+    email VARCHAR(50),
+    gender VARCHAR(10)
+);
+INSERT INTO students_lpu1
+(student_name, reg_id, class, cgpa, age, city, semester, admission_date, fees, attendance, phone_no, email, gender)
+VALUES
+('Tanvi', 230101001, 'K23', 8.75, 20, 'Jalandhar', 5, '2023-08-10', 85000.00, 92.50, 9876543210, 'tanvi@gmail.com', 'Female'),
+
+('Aman', 230101002, 'K23', 7.90, 21, 'Ludhiana', 5, '2023-08-10', 85000.00, 88.00, 9876543211, 'aman@gmail.com', 'Male'),
+
+('Priya', 230101003, 'K24', 9.10, 19, 'Amritsar', 3, '2024-08-12', 80000.00, 96.50, 9876543212, 'priya@gmail.com', 'Female'),
+
+('Rahul', 230101004, 'K22', 6.95, 22, 'Delhi', 7, '2022-08-15', 90000.00, 80.75, 9876543213, 'rahul@gmail.com', 'Male'),
+
+('Simran', 230101005, 'K23', 8.40, 20, 'Chandigarh', 5, '2023-08-10', 85000.00, 94.00, 9876543214, 'simran@gmail.com', 'Female'),
+
+('Karan', 230101006, 'K21', 7.20, 23, 'Patiala', 8, '2021-08-20', 95000.00, 85.25, 9876543215, 'karan@gmail.com', 'Male'),
+
+('Neha', 230101007, 'K24', 9.45, 18, 'Mohali', 3, '2024-08-12', 80000.00, 98.00, 9876543216, 'neha@gmail.com', 'Female'),
+
+('Arjun', 230101008, 'K22', 8.05, 21, 'Jammu', 7, '2022-08-15', 90000.00, 89.75, 9876543217, 'arjun@gmail.com', 'Male'),
+
+('Kavya', 230101009, 'K23', 8.90, 20, 'Noida', 5, '2023-08-10', 85000.00, 95.50, 9876543218, 'kavya@gmail.com', 'Female'),
+
+('Rohit', 230101010, 'K21', 6.80, 24, 'Jaipur', 8, '2021-08-20', 95000.00, 78.50, 9876543219, 'rohit@gmail.com', 'Male');
+DESC students_lpu1;
+Select*from students_lpu1;
+#find out the total no. of students
+SELECT COUNT(*) AS total_students
+FROM students_lpu1;
+#find avg cgpa
+SELECT AVG(cgpa) AS average_cgpa
+FROM students_lpu1;
+#find the highest attendace
+SELECT MAX(attendance) AS highest_attendance
+FROM students_lpu1;
+#find min age
+SELECT MIN(age) AS minimum_age
+FROM students_lpu1;
+#find the total fees collected
+SELECT SUM(fees) AS total_fees_collected
+FROM students_lpu1;
+#count students from delhi
+SELECT COUNT(*) AS total_students
+FROM students_lpu1
+WHERE city = 'Delhi';
+#find avg age of IT students
+UPDATE students_lpu1
+SET class = 'IT'
+WHERE reg_id IN (230101002, 230101004);
+SELECT AVG(age) AS average_age
+FROM students_lpu1
+WHERE class = 'IT';
+
+#find the min cgpa of K23 students
+SELECT MIN(cgpa) AS minimum_cgpa
+FROM students_lpu1
+WHERE class = 'K23';
+#count students whose names start wITH A
+SELECT COUNT(*) AS total_students
+FROM students_lpu1
+WHERE student_name LIKE 'A%';
+#find the total fees collected from students having cgpa greater than 8
+SELECT SUM(fees) AS total_fees
+FROM students_lpu1
+WHERE cgpa > 8;
+
+#find avg fees of students whose city is Delhi or Jaipur and cgpa is at least 8
+SELECT AVG(fees) AS average_fees
+FROM students_lpu1
+WHERE (city = 'Delhi' OR city = 'Jaipur')
+AND cgpa >= 8;
+#count students whose names end with 'a' and age lies bw 18 and 22
+SELECT COUNT(*) AS total_students
+FROM students_lpu1
+WHERE student_name LIKE '%a'
+AND age BETWEEN 18 AND 22;
+#find the highest attendance among students except IT class
+SELECT MAX(attendance) AS highest_attendance
+FROM students_lpu1
+WHERE class != 'IT';
+#find the total fees of students whose email is available
+SELECT SUM(fees) AS total_fees
+FROM students_lpu1
+WHERE email IS NOT NULL;
+#ANOTHER WAY
+SELECT SUM(fees) AS total_fees
+FROM students_lpu1
+WHERE email IS NOT NULL
+AND email <> '';
+#find the min cgpa among students whose names start with S
+SELECT MIN(cgpa) AS minimum_cgpa
+FROM students_lpu1
+WHERE student_name LIKE 'S%';
+  
+  
+#GROUP BY
+SELECT class, COUNT(*) AS total_students
+FROM students_lpu1
+WHERE class = 'K23'
+   OR class = 'K22'
+   OR class = 'IT'
+GROUP BY class;
+#anothet way
+SELECT class, COUNT(*) AS total_students
+FROM students_lpu1
+WHERE class IN ('K23', 'K22', 'IT')
+GROUP BY class;
+
+#avg cgpa class wise
+SELECT class, AVG(cgpa) AS average_cgpa
+FROM students_lpu1
+GROUP BY class;
+ #students count branch wise
+SELECT class, COUNT(*) AS total_students
+FROM students_lpu1
+GROUP BY class;
+
+#student count city-wise
+SELECT city, COUNT(*) AS total_students
+FROM students_lpu1
+GROUP BY city ;
+#total fees class wise
+
+SELECT class, SUM(fees) AS total_fees
+FROM students_lpu1
+GROUP BY class;
+#highest cgpa branch-wise
+SELECT class, MAX(cgpa) AS maximum_cgpa
+FROM students_lpu1
+GROUP BY class;
+
+#min attendace class wise
+SELECT class, MIN(attendance) AS minimum_attendance
+FROM students_lpu1
+GROUP BY class;
+
+#show only those branches whose avg cgpa is greater than 8
+SELECT class, AVG(cgpa) AS average_cgpa
+FROM students_lpu1
+GROUP BY class
+HAVING AVG(cgpa) > 8;
+INSERT INTO students_lpu1
+(student_name, reg_id, class, cgpa, age, city, semester, admission_date, fees, attendance, phone_no, email, gender)
+VALUES
+('Sakshi', 230101011, 'CSE', 8.60, 20, 'Jalandhar', 5, '2023-08-10', 85000.00, 93.50, 9876543220, 'sakshi@gmail.com', 'Female');
+#cities having more than 5 students
+SELECT city, COUNT(*) AS students_count
+FROM students_lpu1
+GROUP BY city
+HAVING COUNT(*) > 1;
+
+#classes having tital fees greater than 50000
+SELECT class, SUM(fees) AS students_count
+FROM students_lpu1
+GROUP BY class
+HAVING SUM(fees) > 50000;
+#cities having avg attendace greater than 80
+SELECT city, AVG(attendance) AS students_count
+FROM students_lpu1
+GROUP BY city
+HAVING AVG(attendance) > 80;
+#display total number of stuudents in each branch
+SELECT class, COUNT(*) AS total_students
+FROM students_lpu1
+GROUP BY class;
+#display avg cgpa of each branch
+SELECT class, AVG(cgpa) AS average_cgpa
+FROM students_lpu1
+GROUP BY class;
+#display min fees pain in every branch
+SELECT class, MIN(fees) AS min_fee
+FROM students_lpu1
+GROUP BY class;
+#display highest attendace in each city
+SELECT city, MAX(attendance) AS max_att
+FROM students_lpu1
+GROUP BY city;
+#display only those branches having more than 8 students
+SELECT class, COUNT(*) AS total_students
+FROM students_lpu1
+GROUP BY class
+HAVING COUNT(*) > 8;
+#display cities having avg cgpa greater than 8
+SELECT city, AVG(cgpa) AS average_cgpa
+FROM students_lpu1
+GROUP BY city
+HAVING AVG(cgpa) > 8;
+#display tot fees collected from each city
+SELECT city, SUM(fees) AS total_fees
+FROM students_lpu1
+GROUP BY city;
+#display highest cgpa of evry branch
+SELECT class, MAX(cgpa) AS highest_cgpa
+FROM students_lpu1
+GROUP BY class;
+#display branches whose min attendace below 80
+SELECT class, MIN(attendance) AS minimum_attendance
+FROM students_lpu1
+GROUP BY class
+HAVING MIN(attendance) < 80;
+#display cities whose tot fees collected is greater than 200000
+SELECT city, SUM(fees)  AS tot_fees
+FROM students_lpu1
+GROUP BY city
+HAVING SUM(fees) < 200000;
+#which class has collected the highest tot fees
+SELECT class, SUM(fees) AS total_fees
+FROM students_lpu1
+GROUP BY class
+ORDER BY total_fees DESC
+LIMIT 1;
+#which city has highest avg attendace
+SELECT city, AVG(attendance) AS average_attendance
+FROM students_lpu1
+GROUP BY city
+ORDER BY average_attendance DESC
+LIMIT 1;
+#show only those classes where highest cgpa is greater than 8
+SELECT class, MAX(cgpa) AS highest_cgpa
+FROM students_lpu1
+GROUP BY class
+HAVING MAX(cgpa) > 8;
+
+#BUISNESS SCENARIOS
+#the principal wants to compare the avg attendance of every branch
+SELECT class, AVG(attendance) AS average_attendance
+FROM students_lpu1
+GROUP BY class;
+#the finnace department wnats to know the tot fees collected from each semester
+SELECT semester, SUM(fees) AS total_fees
+FROM students_lpu1
+GROUP BY semester;
+#the admission office wants to know how many students have enrolled from each city
+SELECT city, COUNT(*) AS total_students
+FROM students_lpu1
+GROUP BY city;
+#the placement cell wants to identify branches whose avg cgpa greater than 8.5
+SELECT class, AVG(cgpa) AS average_cgpa
+FROM students_lpu1
+GROUP BY class
+HAVING AVG(cgpa) > 8.5;
+#the academic coordinator wants to know the highest cgpa obtaimned in each semester
+SELECT semester, MAX(cgpa) AS highest_cgpa
+FROM students_lpu1
+GROUP BY semester;
+CREATE TABLE students_lpu2 (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    age INT CHECK (age >= 18),
+    gender VARCHAR(10),
+    branch VARCHAR(30) NOT NULL,
+    semester INT CHECK (semester BETWEEN 1 AND 8),
+    cgpa DECIMAL(3,1) CHECK (cgpa BETWEEN 0 AND 10),
+    city VARCHAR(50) DEFAULT 'Delhi',
+    email VARCHAR(100) UNIQUE,
+    phone_no VARCHAR(15) UNIQUE,
+    admission_date DATE,
+    fees DECIMAL(10,2) CHECK (fees > 0),
+    attendance DECIMAL(5,2) CHECK (attendance BETWEEN 0 AND 100)
+);
+desc students_lpu2;
+select* from students_lpu2;
+SHOW tables;
