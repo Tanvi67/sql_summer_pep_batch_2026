@@ -1,0 +1,426 @@
+use normalization_lab;
+#i want to see those products whose amount is more than the avg of all products 
+#we use subquery bcz we have single table and we have to compare various average function 
+SELECT
+productname,
+price
+FROM products
+WHERE price >
+(
+    SELECT AVG(price)
+    FROM products
+);
+/*
+#WJHERE WE CAN USE SUBQUERY
+after 
+WHERE CLAUSE (MOST COMMON)
+FROM CLAUSE/STATEMENT
+SELECT
+NSERT
+UPDATE 
+DELETE STATEMENT
+*/
+/*
+OPERATPRS WHICH WE CAN USE WHILE USING SUBQUERIES:
+IN
+NOT IN
+ANY
+ALL
+EXISTS
+NOT EXISTS
+*/
+/*
+JOINS
+Combine data from multiple tables
+used to display related information
+usually faster for reporting
+SUBQUERY
+one query inside another query
+mainly used for fiteration and comparison
+useful when one query depends on another query
+easier to read
+*/
+
+#QUESTIONS
+#Products priced above average
+SELECT
+productName,
+price
+FROM products
+WHERE price >
+(
+    SELECT AVG(price)
+    FROM products
+);
+
+#Most expensive product
+SELECT
+productName,
+price
+FROM products
+WHERE price =
+(
+    SELECT MAX(price)
+    FROM products
+);
+
+#ANOTHER WAY
+SELECT
+productName,
+price
+FROM products
+ORDER BY price DESC
+LIMIT 1;
+
+#Customers who placed orders
+SELECT
+customerID,
+customerName
+FROM customers
+WHERE customerID IN
+(
+    SELECT customerID
+    FROM orders
+);
+
+#Products never ordered
+SELECT
+productID,
+productName,
+price
+FROM products
+WHERE productID NOT IN
+(
+    SELECT productID
+    FROM orderDetails
+);
+
+#Products supplied by suppliers from Delhi
+
+#Supplier supplying products above avg price
+SELECT
+s.supplierName,
+p.productName,
+p.price
+FROM supplier AS s
+INNER JOIN products AS p
+ON s.supplierID = p.supplierID
+WHERE p.price >
+(
+    SELECT AVG(price)
+    FROM products
+);
+
+#Latest order
+SELECT *
+FROM orders
+WHERE order_date =
+(
+    SELECT MAX(order_date)
+    FROM orders
+);         
+#Customers who ordered expensive products
+SELECT
+c.customerName,
+p.productName,
+p.price
+FROM customers AS c
+INNER JOIN orders AS o
+ON c.customerID = o.customerID
+INNER JOIN orderDetails AS od
+ON o.orderID = od.orderID
+INNER JOIN products AS p
+ON od.productID = p.productID
+WHERE p.price >
+(
+    SELECT AVG(price)
+    FROM products
+);
+#Suppliers whose products were never ordered
+SELECT DISTINCT
+s.supplierName
+FROM supplier AS s
+INNER JOIN products AS p
+ON s.supplierID = p.supplierID
+WHERE p.productID NOT IN
+(
+    SELECT productID
+    FROM orderDetails
+);
+
+#Find second highest priced product
+SELECT MAX(price)
+FROM products
+WHERE price < (
+    SELECT MAX(price)
+    FROM products
+);
+
+#If you want the product name and price
+SELECT
+productName,
+price
+FROM products
+WHERE price = (
+    SELECT MAX(price)
+    FROM products
+    WHERE price < (
+        SELECT MAX(price)
+        FROM products
+    )
+);
+
+
+#find products costing more than every stationary product 
+SELECT
+productName,
+price
+FROM products
+WHERE price >
+(
+    SELECT MAX(price)
+    FROM products
+    WHERE category = 'Stationery'
+);
+
+
+/*
+TOPIC:
+1.INTRODUCTION to String Functions
+2.Sting functions
+-UPPER()
+LOWER()
+LENGTH()
+CONCAT()
+SUBSTRING()
+TRIM()
+REPLACE()
+*/
+
+#Display all customer name in uppercase
+SELECT
+customerName,
+UPPER(customerName) AS Uppercase_Name
+FROM customers;
+##Display all customer name in lowercase
+SELECT
+customerName,
+LOWER(customerName) AS Lowercase_Name
+FROM customers;
+#find the length of every customername
+SELECT
+customerName,
+LENGTH(customerName) AS Name_Length
+FROM customers;
+
+#display customer name along with city in one column 
+SELECT
+CONCAT(customerName,' - ',address) AS Customer_Details
+FROM customers;
+
+#Show first 4 characters of every customer name
+SELECT
+customerName,
+LEFT(customerName,4) AS First_4_Characters
+FROM customers;
+
+#replace letter 'a' with '*' in customer names
+SELECT
+customerName,
+REPLACE(customerName,'a','*') AS Modified_Name
+FROM customers;
+
+#remove spaces from the text: 'Database Systems'
+SELECT REPLACE('Database Systems',' ','') AS Result;
+
+#display customer name in uppercase and city in lowercase
+
+SELECT
+UPPER(customerName) AS Customer_Name,
+LOWER(address) AS City
+FROM customers;
+
+#display first 3 leTters of every product
+SELECT
+productName,
+LEFT(productName,3) AS First_3_Letters
+FROM products;
+
+#find products having names longer than 8 characters
+SELECT
+productName,
+LENGTH(productName) AS Name_Length
+FROM products
+WHERE LENGTH(productName) > 8;
+
+#display : customer name (CITY)
+
+SELECT
+CONCAT(customerName,' (',address,')') AS Customer_Details
+FROM customers;
+
+#replace spaces in product names with '_'
+SELECT
+productName,
+REPLACE(productName,' ','_') AS Modified_Name
+FROM products;
+
+#display total number of characters in city names
+SELECT
+address,
+LENGTH(address) AS Total_Characters
+FROM customers;
+
+#display customer initials using SUBSTRING()
+
+#create output: Rahul purchased laptop
+
+#display only first five leeters of products names.
+
+#display product name in uppercase
+SELECT
+productname,
+UPPER(productname) AS Uppercase_Name
+FROM products;
+
+#display supplier name with total character count
+
+#display customer names after removing unnex=cessary spaces
+
+#create formatted output : CUSTOMER_NAME-CITY
+
+
+#LEVEL-2
+#Find ther total amount spent by each customer
+SELECT
+c.customerName,
+SUM(od.Quantity * p.price) AS Total_Amount
+FROM customers AS c
+INNER JOIN orders AS o
+ON c.customerID = o.customerID
+INNER JOIN orderDetails AS od
+ON o.orderID = od.orderID
+INNER JOIN products AS p
+ON od.productID = p.productID
+GROUP BY c.customerID, c.customerName;
+
+#display customers who have placed more than 2 orders
+SELECT
+c.customerName,
+COUNT(o.orderID) AS Total_Orders
+FROM customers AS c
+INNER JOIN orders AS o
+ON c.customerID = o.customerID
+GROUP BY c.customerID, c.customerName
+HAVING COUNT(o.orderID) > 2;
+
+#Find the avg price of products supplied by each supplier
+SELECT
+s.supplierName,
+AVG(p.price) AS Average_Price
+FROM supplier AS s
+INNER JOIN products AS p
+ON s.supplierID = p.supplierID
+GROUP BY s.supplierID, s.supplierName;
+
+#display the top 5 most expensive products
+SELECT
+productName,
+price
+FROM products
+ORDER BY price DESC
+LIMIT 5;
+
+#sind products that have never been ordered
+SELECT
+productName,
+price
+FROM products
+WHERE productID NOT IN
+(
+SELECT productID
+FROM orderDetails
+);
+
+#diplay supplier anmes along with the number of products they supply
+SELECT
+s.supplierName,
+COUNT(p.productID) AS Total_Products
+FROM supplier AS s
+INNER JOIN products AS p
+ON s.supplierID = p.supplierID
+GROUP BY s.supplierID, s.supplierName;
+
+#find customers who purchased products from more than 1 supplier
+SELECT
+c.customerName,
+COUNT(DISTINCT p.supplierID) AS Total_Suppliers
+FROM customers AS c
+INNER JOIN orders AS o
+ON c.customerID = o.customerID
+INNER JOIN orderDetails AS od
+ON o.orderID = od.orderID
+INNER JOIN products AS p
+ON od.productID = p.productID
+GROUP BY c.customerID, c.customerName
+HAVING COUNT(DISTINCT p.supplierID) > 1;
+
+#display the product ordered in the highest quantity
+
+SELECT
+p.productName,
+od.Quantity
+FROM products AS p
+INNER JOIN orderDetails AS od
+ON p.productID = od.productID
+WHERE od.Quantity =
+(
+SELECT MAX(Quantity)
+FROM orderDetails
+);
+
+#display the first 3 characetres of product names whose price is above the avg product price
+SELECT
+LEFT(productName,3) AS First_3_Characters
+FROM products
+WHERE price >
+(
+SELECT AVG(price)
+FROM products
+);
+
+#display customer names in uppercase along with their total purchase amount
+SELECT
+UPPER(c.customerName) AS Customer_Name,
+SUM(od.Quantity * p.price) AS Total_Purchase
+FROM customers AS c
+INNER JOIN orders AS o
+ON c.customerID = o.customerID
+INNER JOIN orderDetails AS od
+ON o.orderID = od.orderID
+INNER JOIN products AS p
+ON od.productID = p.productID
+GROUP BY c.customerID, c.customerName;
+
+#LEVEL 3
+#find customers whose total purchase amount is greater than the avg customer purchase
+
+#display suppliers whose product have never appeared in any order
+SELECT DISTINCT
+s.supplierName
+FROM supplier AS s
+INNER JOIN products AS p
+ON s.supplierID = p.supplierID
+WHERE p.productID NOT IN
+(
+SELECT productID
+FROM orderDetails
+);
+
+#find the customer who placed the maximum number of orders
+
+#find products whose prices are greater than the avg price of products in their supplier group
+
+#display cities having more than 3 customers
+
+#
