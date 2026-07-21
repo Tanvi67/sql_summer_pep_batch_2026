@@ -1,0 +1,37 @@
+SHOW DATABASES;
+CREATE DATABASE lpu_db;
+USE lpu_db;
+SELECT DATABASE();
+SHOW TABLES;
+CREATE TABLE students_lpu(
+    name VARCHAR(50),
+    reg_num INT,
+    batch VARCHAR(50),
+    cgpa FLOAT,
+    age INT,
+    roll_number INT
+);
+SHOW TABLES;
+DESC students_lpu;
+INSERT INTO students_lpu
+(name, reg_num, batch, cgpa, age, roll_number)
+VALUES
+('Tanvi',101,'2023',8.5,20,1),
+('Rahul',102,'2023',7.8,21,2),
+('Priya',103,'2023',9.1,20,3),
+('Aman',104,'2023',8.2,22,4),
+('Sneha',105,'2023',8.9,20,5);
+SELECT * FROM students_lpu;
+SELECT name, cgpa FROM students_lpu;
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE students_lpu
+SET batch='2027';
+SELECT * FROM students_lpu;
+UPDATE students_lpu
+SET cgpa=9.5
+WHERE reg_num=101;
+
+DELETE FROM students_lpu
+WHERE reg_num=105;
+DELETE FROM students_lpu;
